@@ -26,6 +26,7 @@ public class Run {
 
         //Create solution to try and get to
         StringBuilder solution = new StringBuilder();
+        int chromosomeLength = 1000;
         for (int i = 0; i < 1000; i++) {
             Random r = new Random();
             if (r.nextInt(2) == 0) {
@@ -40,7 +41,6 @@ public class Run {
         for (int iter = 0; iter < 1000; iter++) {
             //Phase 1:
             int populationSize = 300;
-            int chromosomeLength = 1000;
             //Possible selections methods: one-point, two-point, uniform (default is uniform)
             Population population = new Population(populationSize, chromosomeLength, "uniform", 60);
 
