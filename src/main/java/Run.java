@@ -23,8 +23,8 @@ public class Run {
          */
 
         //Phase 1:
-        int populationSize = 10;
-        int chromosomeLength = 10;
+        int populationSize = 50;
+        int chromosomeLength = 15;
         Population population = new Population(populationSize, chromosomeLength);
 
         //Phase 2:
@@ -37,5 +37,9 @@ public class Run {
 
         //Phase 3:
         population.selectFittestIndividuals();
+
+        //Phase 4:
+        population.reproduce();
+
     }
 }

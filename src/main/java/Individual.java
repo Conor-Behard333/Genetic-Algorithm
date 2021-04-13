@@ -1,4 +1,6 @@
-public class Individual {
+import javax.sound.midi.MidiFileFormat;
+
+public class Individual implements Comparable<Individual> {
     private Chromosome chromosome;
     private int fitnessScore;
 
@@ -25,5 +27,10 @@ public class Individual {
     @Override
     public String toString() {
         return chromosome.toString() + " fitness: " + fitnessScore;
+    }
+
+    @Override
+    public int compareTo(Individual individual) {
+        return Integer.compare(individual.getFitnessScore(), fitnessScore);
     }
 }
