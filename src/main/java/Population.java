@@ -52,17 +52,11 @@ public class Population {
     }
 
     private void killTheWeak(double averageFitness) {
-        int numOfIndividualsKilled = 0;
         for (int i = 0; i < POPULATION_SIZE; i++) {
             if (individuals[i].getFitnessScore() < averageFitness) {
                 individuals[i] = null;
-                numOfIndividualsKilled++;
             }
         }
-
-//        System.out.println("Alive: " + (POPULATION_SIZE - numOfIndividualsKilled));
-//        System.out.println("Dead: " + numOfIndividualsKilled);
-//        System.out.println("Children needed: " + numOfIndividualsKilled);
     }
 
     private double getAverageFitness() {
@@ -72,7 +66,6 @@ public class Population {
             averageFitness += individual.getFitnessScore();
         }
         averageFitness = Math.round(averageFitness / POPULATION_SIZE);
-//        System.out.println("Average fitness: " + averageFitness);
         return averageFitness;
     }
 
@@ -100,24 +93,19 @@ public class Population {
         char[][] offspringsGenes = new char[getDeadPopulation()][CHROMOSOME_LENGTH];
 
         for (int i = 0; i < offspringsGenes.length; i++) {
-            int crossoverPoint = rand.nextInt(CHROMOSOME_LENGTH - 1);
 
-            int livingPopulation = getLivingPopulation();
-            Individual parent1 = individuals[rand.nextInt(livingPopulation)];
-            Individual parent2;
-            do {
-                parent2 = individuals[rand.nextInt(livingPopulation)];
-            } while (parent1.equals(parent2));
+            Individual[] parents = getParents(rand);
 
-            for (int j = 0; j < crossoverPoint + 1; j++) {
-                offspringsGenes[i][j] = parent1.getChromosome().getGenes()[j];
-            }
-            for (int j = crossoverPoint + 1; j < CHROMOSOME_LENGTH; j++) {
-                offspringsGenes[i][j] = parent2.getChromosome().getGenes()[j];
-            }
+//            onePointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
 
-            //25% chance to mutate
-            if (rand.nextInt(99) + 1 < 60) {
+            twoPointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
+
+            //TODO: implement Uniform crossover
+
+            //TODO: Maybe add it so that parents make two children instead of one
+
+            //60% chance to mutate
+            if (rand.nextInt(99) + 1 < 70) {
                 //Phase 5
                 mutate(offspringsGenes[i], rand.nextInt(CHROMOSOME_LENGTH));
             }
@@ -129,6 +117,53 @@ public class Population {
                 individuals[i] = new Individual(new Chromosome(offspringsGenes[offspringIndex]));
                 offspringIndex++;
             }
+        }
+    }
+
+    private Individual[] getParents(Random rand) {
+        int livingPopulation = getLivingPopulation();
+        Individual parent1 = individuals[rand.nextInt(livingPopulation)];
+        Individual parent2;
+        do {
+            parent2 = individuals[rand.nextInt(livingPopulation)];
+        } while (parent1.equals(parent2));
+
+        return new Individual[]{parent1, parent2};
+    }
+
+    private void onePointCrossover(char[][] offspringsGenes, int offspringIndex, Random rand, Individual parent1, Individual parent2) {
+        int crossoverPoint = rand.nextInt(CHROMOSOME_LENGTH - 1);
+        //go from start to crossover Point 1
+        for (int i = 0; i < crossoverPoint + 1; i++) {
+            offspringsGenes[offspringIndex][i] = parent1.getChromosome().getGenes()[i];
+        }
+        //go from crossover Point 1 to end
+        for (int i = crossoverPoint + 1; i < CHROMOSOME_LENGTH; i++) {
+            offspringsGenes[offspringIndex][i] = parent2.getChromosome().getGenes()[i];
+        }
+    }
+
+    private void twoPointCrossover(char[][] offspringsGenes, int offspringIndex, Random rand, Individual parent1, Individual parent2) {
+        int crossoverPoint1;
+        int crossoverPoint2;
+        do {
+            crossoverPoint1 = rand.nextInt(CHROMOSOME_LENGTH / 2);
+            crossoverPoint2 = (rand.nextInt(CHROMOSOME_LENGTH / 2) + CHROMOSOME_LENGTH / 2) - 1;
+        } while (crossoverPoint2 < crossoverPoint1);
+
+        //go from start to crossover Point 1
+        for (int i = 0; i < crossoverPoint1 + 1; i++) {
+            offspringsGenes[offspringIndex][i] = parent1.getChromosome().getGenes()[i];
+        }
+
+        //go from crossover Point 1 to crossover Point 2
+        for (int i = crossoverPoint1 + 1; i <= crossoverPoint2; i++) {
+            offspringsGenes[offspringIndex][i] = parent2.getChromosome().getGenes()[i];
+        }
+
+        //go from crossover Point 2 to end
+        for (int i = crossoverPoint2 + 1; i < CHROMOSOME_LENGTH; i++) {
+            offspringsGenes[offspringIndex][i] = parent1.getChromosome().getGenes()[i];
         }
     }
 

@@ -25,8 +25,8 @@ public class Run {
          */
         for (int iter = 0; iter < 10000; iter++) {
             //Phase 1:
-            int populationSize = 100;
-            int chromosomeLength = 50;
+            int populationSize = 150;
+            int chromosomeLength = 200;
             Population population = new Population(populationSize, chromosomeLength);
 
             //Phase 2:
@@ -52,6 +52,7 @@ public class Run {
                     break;
                 }
             }
+            System.out.println(population.getFittestIndividual().getFitnessScore());
             if (population.getFittestIndividual().getFitnessScore() == chromosomeLength ) {
                 break;
             }
