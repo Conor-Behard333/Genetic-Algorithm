@@ -23,10 +23,10 @@ public class Run {
          * Some of the genes can be subjected to a mutation with a low random probability.
          * Results in some of the genes being flipped
          */
-        for (int iter = 0; iter < 100; iter++) {
+        for (int iter = 0; iter < 10000; iter++) {
             //Phase 1:
             int populationSize = 100;
-            int chromosomeLength = 100;
+            int chromosomeLength = 50;
             Population population = new Population(populationSize, chromosomeLength);
 
             //Phase 2:
@@ -44,11 +44,17 @@ public class Run {
 
                 //Phase 4 & 5:
                 population.reproduce();
+
+                if (population.getFittestIndividual().getFitnessScore() == chromosomeLength) {
+                    System.out.println("Iteration: " + iter);
+                    System.out.println("Generation: " + generation);
+                    System.out.println(population.getFittestIndividual());
+                    break;
+                }
             }
-            if (population.getFittestIndividual().getFitnessScore() == 100) {
-                System.out.println(population.getFittestIndividual());
+            if (population.getFittestIndividual().getFitnessScore() == chromosomeLength ) {
+                break;
             }
-            System.out.println(population.getFittestIndividual().getFitnessScore());
         }
     }
 

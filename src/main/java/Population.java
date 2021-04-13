@@ -116,7 +116,8 @@ public class Population {
                 offspringsGenes[i][j] = parent2.getChromosome().getGenes()[j];
             }
 
-            if (rand.nextInt() % 7 < 6) {
+            //25% chance to mutate
+            if (rand.nextInt(99) + 1 < 60) {
                 //Phase 5
                 mutate(offspringsGenes[i], rand.nextInt(CHROMOSOME_LENGTH));
             }
