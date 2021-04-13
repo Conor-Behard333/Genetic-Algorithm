@@ -98,10 +98,10 @@ public class Population {
 
 //            onePointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
 
-            twoPointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
+//            twoPointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
 
-            //TODO: implement Uniform crossover
             uniformCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
+
             //TODO: Maybe add it so that parents make two children instead of one
 
             //60% chance to mutate
@@ -120,7 +120,15 @@ public class Population {
         }
     }
 
-    private void uniformCrossover(char[][] offspringsGenes, int i, Random rand, Individual parent, Individual parent1) {
+    private void uniformCrossover(char[][] offspringsGenes, int offspringIndex, Random rand, Individual parent1, Individual parent2) {
+        for (int i = 0; i < offspringsGenes[offspringIndex].length; i++) {
+            int parentIndex = rand.nextInt(2);
+            if(parentIndex == 0){
+                offspringsGenes[offspringIndex][i] = parent1.getChromosome().getGenes()[i];
+            }else{
+                offspringsGenes[offspringIndex][i] = parent2.getChromosome().getGenes()[i];
+            }
+        }
     }
 
     private Individual[] getParents(Random rand) {

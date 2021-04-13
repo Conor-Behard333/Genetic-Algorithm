@@ -25,8 +25,8 @@ public class Run {
          */
         for (int iter = 0; iter < 10000; iter++) {
             //Phase 1:
-            int populationSize = 150;
-            int chromosomeLength = 200;
+            int populationSize = 200;
+            int chromosomeLength = 500;
             Population population = new Population(populationSize, chromosomeLength);
 
             //Phase 2:
@@ -46,14 +46,14 @@ public class Run {
                 population.reproduce();
 
                 if (population.getFittestIndividual().getFitnessScore() == chromosomeLength) {
-                    System.out.println("Iteration: " + iter);
+                    System.out.println("Iteration: " + iter + 1);
                     System.out.println("Generation: " + generation);
                     System.out.println(population.getFittestIndividual());
                     break;
                 }
             }
             System.out.println(population.getFittestIndividual().getFitnessScore());
-            if (population.getFittestIndividual().getFitnessScore() == chromosomeLength ) {
+            if (population.getFittestIndividual().getFitnessScore() == chromosomeLength) {
                 break;
             }
         }
