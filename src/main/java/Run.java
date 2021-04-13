@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Run {
     public static void main(String[] args) {
         /* Phases of a genetic algorithm
@@ -21,25 +23,33 @@ public class Run {
          * Some of the genes can be subjected to a mutation with a low random probability.
          * Results in some of the genes being flipped
          */
+        for (int iter = 0; iter < 100; iter++) {
+            //Phase 1:
+            int populationSize = 100;
+            int chromosomeLength = 100;
+            Population population = new Population(populationSize, chromosomeLength);
 
-        //Phase 1:
-        int populationSize = 50;
-        int chromosomeLength = 15;
-        Population population = new Population(populationSize, chromosomeLength);
+            //Phase 2:
+            StringBuilder solution = new StringBuilder();
+            for (int i = 0; i < chromosomeLength; i++) {
+                solution.append("1");
+            }
 
-        //Phase 2:
-        StringBuilder solution = new StringBuilder();
-        for (int i = 0; i < chromosomeLength; i++) {
-            solution.append("1");
+            for (int generation = 0; generation < 100; generation++) {
+                //Phase 2
+                population.evaluateFitness(solution.toString());
+
+                //Phase 3:
+                population.selectFittestIndividuals();
+
+                //Phase 4 & 5:
+                population.reproduce();
+            }
+            if (population.getFittestIndividual().getFitnessScore() == 100) {
+                System.out.println(population.getFittestIndividual());
+            }
+            System.out.println(population.getFittestIndividual().getFitnessScore());
         }
-        population.evaluateFitness(solution.toString());
-        System.out.println(population);
-
-        //Phase 3:
-        population.selectFittestIndividuals();
-
-        //Phase 4:
-        population.reproduce();
-
     }
+
 }

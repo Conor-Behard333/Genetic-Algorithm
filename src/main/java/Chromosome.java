@@ -17,6 +17,10 @@ public class Chromosome {
         }
     }
 
+    public Chromosome(char[] genes) {
+        this.genes = genes;
+    }
+
     public char[] getGenes() {
         return genes;
     }
