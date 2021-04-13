@@ -101,7 +101,7 @@ public class Population {
             twoPointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
 
             //TODO: implement Uniform crossover
-
+            uniformCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
             //TODO: Maybe add it so that parents make two children instead of one
 
             //60% chance to mutate
@@ -118,6 +118,9 @@ public class Population {
                 offspringIndex++;
             }
         }
+    }
+
+    private void uniformCrossover(char[][] offspringsGenes, int i, Random rand, Individual parent, Individual parent1) {
     }
 
     private Individual[] getParents(Random rand) {
