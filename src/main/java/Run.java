@@ -23,19 +23,28 @@ public class Run {
          * Some of the genes can be subjected to a mutation with a low random probability.
          * Results in some of the genes being flipped
          */
-        for (int iter = 0; iter < 10000; iter++) {
-            //Phase 1:
-            int populationSize = 200;
-            int chromosomeLength = 500;
-            Population population = new Population(populationSize, chromosomeLength);
 
-            //Phase 2:
-            StringBuilder solution = new StringBuilder();
-            for (int i = 0; i < chromosomeLength; i++) {
+        //Create solution to try and get to
+        StringBuilder solution = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            Random r = new Random();
+            if (r.nextInt(2) == 0) {
+                solution.append("0");
+            } else {
                 solution.append("1");
-            }
 
-            for (int generation = 0; generation < 100; generation++) {
+            }
+        }
+        System.out.println("Solution: " + solution);
+
+        for (int iter = 0; iter < 1000; iter++) {
+            //Phase 1:
+            int populationSize = 300;
+            int chromosomeLength = 1000;
+            //Possible selections methods: one-point, two-point, uniform (default is uniform)
+            Population population = new Population(populationSize, chromosomeLength, "uniform", 60);
+
+            for (int generation = 0; generation < 400; generation++) {
                 //Phase 2
                 population.evaluateFitness(solution.toString());
 
@@ -46,16 +55,17 @@ public class Run {
                 population.reproduce();
 
                 if (population.getFittestIndividual().getFitnessScore() == chromosomeLength) {
-                    System.out.println("Iteration: " + iter + 1);
+                    System.out.println("Solution Found on:");
+                    System.out.println("Iteration: " + (iter + 1));
                     System.out.println("Generation: " + generation);
                     System.out.println(population.getFittestIndividual());
                     break;
                 }
             }
-            System.out.println(population.getFittestIndividual().getFitnessScore());
             if (population.getFittestIndividual().getFitnessScore() == chromosomeLength) {
                 break;
             }
+            System.out.println("Best fitness score for iteration " + (iter + 1) + ": " + population.getFittestIndividual().getFitnessScore());
         }
     }
 

@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -9,16 +8,23 @@ public class Population {
     private Individual[] individuals;
     private final int POPULATION_SIZE;
     private final int CHROMOSOME_LENGTH;
+    private final String SELECTION_METHOD;
+    private final int MUTATION_PROB;
 
     /**
      * Instantiates a new Population.
      *
      * @param populationSize   the population size
      * @param chromosomeLength the chromosome length
+     * @param selectionMethod  the selection method
+     * @param mutationProb     the mutation prob
      */
-    public Population(int populationSize, int chromosomeLength) {
+    public Population(int populationSize, int chromosomeLength, String selectionMethod, int mutationProb) {
         CHROMOSOME_LENGTH = chromosomeLength;
         POPULATION_SIZE = populationSize;
+        SELECTION_METHOD = selectionMethod;
+        MUTATION_PROB = mutationProb;
+
         individuals = new Individual[populationSize];
         for (int i = 0; i < populationSize; i++) {
             individuals[i] = new Individual(chromosomeLength);
@@ -90,27 +96,43 @@ public class Population {
      */
     public void reproduce() {
         Random rand = new Random();
-        char[][] offspringsGenes = new char[getDeadPopulation()][CHROMOSOME_LENGTH];
+        char[][] offspringsGenes = new char[getKilledPopulation()][CHROMOSOME_LENGTH];
 
         for (int i = 0; i < offspringsGenes.length; i++) {
 
             Individual[] parents = getParents(rand);
 
-//            onePointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
+            //creates the offsprings genes using the parents genes
+            createOffspringGenes(rand, offspringsGenes, i, parents);
 
-//            twoPointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
-
-            uniformCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
-
-            //TODO: Maybe add it so that parents make two children instead of one
-
-            //60% chance to mutate
-            if (rand.nextInt(99) + 1 < 70) {
-                //Phase 5
-                mutate(offspringsGenes[i], rand.nextInt(CHROMOSOME_LENGTH));
-            }
+            //chance to mute offsprings genes
+            mutateOffspring(rand, offspringsGenes, i);
         }
 
+        addOffspringsToPopulation(offspringsGenes);
+    }
+
+    private void mutateOffspring(Random rand, char[][] offspringsGenes, int i) {
+        if (rand.nextInt(99) + 1 < MUTATION_PROB) {
+            //Phase 5
+            mutate(offspringsGenes[i], rand.nextInt(CHROMOSOME_LENGTH));
+        }
+    }
+
+    private void createOffspringGenes(Random rand, char[][] offspringsGenes, int i, Individual[] parents) {
+        switch (SELECTION_METHOD) {
+            case "one-point":
+                onePointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
+                break;
+            case "two-point":
+                twoPointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
+                break;
+            default:
+                uniformCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
+        }
+    }
+
+    private void addOffspringsToPopulation(char[][] offspringsGenes) {
         int offspringIndex = 0;
         for (int i = 0; i < individuals.length; i++) {
             if (individuals[i] == null) {
@@ -123,9 +145,9 @@ public class Population {
     private void uniformCrossover(char[][] offspringsGenes, int offspringIndex, Random rand, Individual parent1, Individual parent2) {
         for (int i = 0; i < offspringsGenes[offspringIndex].length; i++) {
             int parentIndex = rand.nextInt(2);
-            if(parentIndex == 0){
+            if (parentIndex == 0) {
                 offspringsGenes[offspringIndex][i] = parent1.getChromosome().getGenes()[i];
-            }else{
+            } else {
                 offspringsGenes[offspringIndex][i] = parent2.getChromosome().getGenes()[i];
             }
         }
@@ -196,16 +218,21 @@ public class Population {
         return alive;
     }
 
-    private int getDeadPopulation() {
-        int dead = 0;
+    private int getKilledPopulation() {
+        int killed = 0;
         for (Individual individual : individuals) {
             if (individual == null) {
-                dead++;
+                killed++;
             }
         }
-        return dead;
+        return killed;
     }
 
+    /**
+     * Gets fittest individual.
+     *
+     * @return the fittest individual
+     */
     public Individual getFittestIndividual() {
         return individuals[0];
     }
