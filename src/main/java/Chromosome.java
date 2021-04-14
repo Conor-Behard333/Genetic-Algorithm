@@ -21,6 +21,15 @@ public class Chromosome {
         this.genes = genes;
     }
 
+    public static int getIndexOfNumber(char[] genes, int numLookingFor) {
+        for (int i = 0; i < genes.length; i++) {
+            if (genes[i] == numLookingFor) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public char[] getGenes() {
         return genes;
     }

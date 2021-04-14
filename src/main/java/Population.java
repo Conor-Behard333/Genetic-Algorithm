@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -127,6 +128,9 @@ public class Population {
             case "two-point":
                 twoPointCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
                 break;
+            case "cx2":
+                cycleCrossoverV2(offspringsGenes, i, parents[0], parents[1]);
+                break;
             default:
                 uniformCrossover(offspringsGenes, i, rand, parents[0], parents[1]);
         }
@@ -140,6 +144,40 @@ public class Population {
                 offspringIndex++;
             }
         }
+    }
+
+    private void cycleCrossoverV2(char[][] offspringsGenes, int offspringIndex, Individual parent1, Individual parent2) {
+        char[] parent1Genes = parent1.getChromosome().getGenes();
+        char[] parent2Genes = parent2.getChromosome().getGenes();
+
+        int index = 1;
+        for (int i = 1; i < offspringsGenes[offspringIndex].length - 1; i++) {
+            if (Chromosome.getIndexOfNumber(offspringsGenes[offspringIndex], parent2Genes[index]) != -1) {
+                index = 0;
+                parent1Genes = getNewArray(offspringsGenes[offspringIndex], parent1Genes);
+                parent2Genes = getNewArray(offspringsGenes[offspringIndex], parent2Genes);
+            }
+            offspringsGenes[offspringIndex][i] = parent2Genes[index];
+            int numPartner = parent2Genes[index];
+            index = Chromosome.getIndexOfNumber(parent1Genes, numPartner);
+            index = Chromosome.getIndexOfNumber(parent1Genes, parent2Genes[index]);
+            index = Chromosome.getIndexOfNumber(parent1Genes, parent2Genes[index]);
+        }
+    }
+
+    private char[] getNewArray(char[] offspringsGenes, char[] parentGenes) {
+        ArrayList<Character> tmp = new ArrayList<>();
+        for (char parent1Gene : parentGenes) {
+            if (Chromosome.getIndexOfNumber(offspringsGenes, parent1Gene) == -1) {
+                tmp.add(parent1Gene);
+            }
+        }
+
+        char[] rtn = new char[tmp.size()];
+        for (int i = 0; i < rtn.length; i++) {
+            rtn[i] = tmp.get(i);
+        }
+        return rtn;
     }
 
     private void uniformCrossover(char[][] offspringsGenes, int offspringIndex, Random rand, Individual parent1, Individual parent2) {
